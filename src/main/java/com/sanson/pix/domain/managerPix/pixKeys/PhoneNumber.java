@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 public class PhoneNumber extends PixKey{
 
-    private static final String REGEX = "^\\++([0-9]{2}$)?([1-9]{4}$)?([0-9]{13}$)";
+    private static final String REGEX = "^\\++([0-9]{2}$)?([1-9]{4,5}$)?([0-9]{13,14}$)";
 
     public PhoneNumber(String value) {
         super(value, PixType.PHONE_NUMBER);

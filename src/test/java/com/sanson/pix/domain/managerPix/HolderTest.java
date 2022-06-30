@@ -12,7 +12,7 @@ class HolderTest {
         var exception = assertThrows(BusinessException.class,()->{
             new Holder("", null, HolderType.F);
         });
-        assertEquals("name is required", exception.getMessage());
+        assertEquals("holder name is invalid", exception.getMessage());
     }
 
     @Test
@@ -20,7 +20,7 @@ class HolderTest {
         var exception = assertThrows(BusinessException.class,()->{
             new Holder(null, null, HolderType.F);
         });
-        assertEquals("name is required", exception.getMessage());
+        assertEquals("holder name is invalid", exception.getMessage());
     }
 
     @Test
@@ -28,7 +28,7 @@ class HolderTest {
         var exception = assertThrows(BusinessException.class,()->{
             new Holder("holderName", null, null);
         });
-        assertEquals("type is required", exception.getMessage());
+        assertEquals("holder type is invalid", exception.getMessage());
     }
 
 }

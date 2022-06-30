@@ -20,11 +20,14 @@ public class Holder {
     private HolderType type;
 
     public Holder(String name, String lastName, HolderType type) {
-        if (isEmpty(name)){
-            Error.required("name");
+        if (isEmpty(name) || name.length() > 30) {
+            Error.invalid("holder name");
         }
         if (isNull(type)){
-            Error.required("type");
+            Error.invalid("holder type");
+        }
+        if ( !isNull(lastName) && lastName.length() > 45){
+            Error.invalid("holder last name");
         }
         this.id = UUID.randomUUID();
         this.name = name;

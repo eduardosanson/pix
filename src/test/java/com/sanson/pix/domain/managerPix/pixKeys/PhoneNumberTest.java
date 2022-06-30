@@ -13,7 +13,7 @@ class PhoneNumberTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "","+","+55", "21987721599", "987721599","5521987721599","+552198772159", "+55219877215912"
+            "","+","+55", "21987721599", "987721599","5521987721599","+552198772159", "+552198772159120"
     })
     public void shouldThrowExceptionWhenPhoneKeyIsInvalid(String phoneNumber) {
 
