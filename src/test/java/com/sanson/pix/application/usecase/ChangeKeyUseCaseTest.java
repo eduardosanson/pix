@@ -8,6 +8,7 @@ import com.sanson.pix.domain.managerPix.Account;
 import com.sanson.pix.domain.managerPix.AccountType;
 import com.sanson.pix.domain.managerPix.Holder;
 import com.sanson.pix.domain.managerPix.HolderType;
+import com.sanson.pix.util.TestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,12 +38,6 @@ class ChangeKeyUseCaseTest {
     @Captor
     private ArgumentCaptor<Account> accountCaptor;
 
-    public Holder validHolderPF = new Holder("holderTest",null, HolderType.F);
-    public Account validAccount = new Account(AccountType.CHECKING,
-            1234,123456,validHolderPF, new ArrayList<>());
-
-
-
     @BeforeEach
     public void init() {
         changeKeyUseCase = new ChangeKeyService(accountPort);
@@ -62,9 +57,8 @@ class ChangeKeyUseCaseTest {
     @Test
     public void shouldSaveNewPixKey(){
 
-        var changeKeyCommand = new ChangeKeyCommand(UUID.randomUUID(), Optional.of(AccountType.CHECKING),
-                Optional.of(1234),Optional.of(1235), Optional.of(HolderType.J),
-                Optional.of("holderName"), Optional.empty());
+        var changeKeyCommand = TestUtil.changeKeyCommand();
+        var validAccount = TestUtil.validAccount();
 
         when(accountPort.load(eq(changeKeyCommand.getId())))
                 .thenReturn(Optional.of(validAccount));

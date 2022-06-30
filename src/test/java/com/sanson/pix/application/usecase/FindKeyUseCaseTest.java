@@ -9,6 +9,7 @@ import com.sanson.pix.domain.managerPix.AccountType;
 import com.sanson.pix.domain.managerPix.Holder;
 import com.sanson.pix.domain.managerPix.HolderType;
 import com.sanson.pix.domain.managerPix.pixKeys.PixType;
+import com.sanson.pix.util.TestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,9 +33,6 @@ class FindKeyUseCaseTest {
     @Mock
     private AccountPort accountPort;
 
-    public Holder validHolderPF = new Holder("holderTest",null, HolderType.F);
-    public Account validAccount = new Account(AccountType.CHECKING,
-            1234,123456,validHolderPF, new ArrayList<>());
 
     @BeforeEach
     public void init() {
@@ -63,7 +61,7 @@ class FindKeyUseCaseTest {
     @Test
     public void shouldFindKeyById() {
         var id = UUID.randomUUID();
-        when(accountPort.loadFromKeyId(eq(id))).thenReturn(Optional.of(validAccount));
+        when(accountPort.loadFromKeyId(eq(id))).thenReturn(Optional.of(TestUtil.validAccount()));
 
         assertNotNull(findKeyUseCase.findKey(id));
     }
@@ -72,7 +70,7 @@ class FindKeyUseCaseTest {
     public void shouldFindKeyByAgencyAndNumber() {
         var agency= 123;
         var number=123;
-        when(accountPort.findBy(eq(agency), eq(number))).thenReturn(Optional.of(validAccount));
+        when(accountPort.findBy(eq(agency), eq(number))).thenReturn(Optional.of(TestUtil.validAccount()));
 
         assertNotNull(findKeyUseCase.findKey(agency, number));
     }
@@ -98,7 +96,7 @@ class FindKeyUseCaseTest {
     @Test
     public void shouldFindKeysByType() {
         var id = UUID.randomUUID();
-        when(accountPort.loadFromKeyType(eq(PixType.EMAIL))).thenReturn(Arrays.asList(validAccount));
+        when(accountPort.loadFromKeyType(eq(PixType.EMAIL))).thenReturn(Arrays.asList(TestUtil.validAccount()));
 
         assertFalse(findKeyUseCase.findKeyType(PixType.EMAIL).isEmpty());
     }

@@ -108,14 +108,14 @@ class PixControllerTest {
         var account = TestUtil.validAccount();
         var pixKey = TestUtil.validEmail();
         account.addNewPixKey(pixKey);
-        var request = new UpdatePixDTO(pixKey.getId().toString(), AccountType.CHECKING, 1234,
+        var request = new UpdatePixDTO( AccountType.CHECKING, 1234,
                 12345, "holderTest", "", HolderType.F);
 
 
         when(changeKeyUseCase.changeKey(any(ChangeKeyCommand.class))).thenReturn(account);
 
         this.mockMvc.perform(
-                        put(BASE_URL)
+                        put(BASE_URL + "/" + pixKey.getId())
                                 .contentType(APPLICATION_JSON)
                                 .content(TestUtil.convertToJson(request))
                 )
@@ -138,14 +138,14 @@ class PixControllerTest {
         var account = TestUtil.validAccount();
         var pixKey = TestUtil.validEmail();
         account.addNewPixKey(pixKey);
-        var request = new UpdatePixDTO(pixKey.getId().toString(), AccountType.CHECKING, 1234,
+        var request = new UpdatePixDTO(AccountType.CHECKING, 1234,
                 12345, "holderTest", "", HolderType.F);
 
 
         when(changeKeyUseCase.changeKey(any(ChangeKeyCommand.class))).thenThrow(new NotFoundException("teste not found"));
 
         this.mockMvc.perform(
-                        put(BASE_URL)
+                        put(BASE_URL + "/" + pixKey.getId())
                                 .contentType(APPLICATION_JSON)
                                 .content(TestUtil.convertToJson(request))
                 )

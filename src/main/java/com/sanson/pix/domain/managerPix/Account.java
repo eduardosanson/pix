@@ -23,10 +23,10 @@ public class Account {
     private List<PixKey> pixKeys;
 
     public Account(AccountType type, Integer agency, Integer number, Holder holder, List<PixKey> pixKeys) {
-        if (agency.toString().length()>4){
+        if (agency == null || agency.toString().length()>4){
             Error.invalid("agency number");
         }
-        if (number.toString().length()>8){
+        if (number == null || number.toString().length()>8){
             Error.invalid("account number");
         }
         if (holder == null){

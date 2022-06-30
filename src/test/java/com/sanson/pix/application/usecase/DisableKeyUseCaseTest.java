@@ -10,6 +10,7 @@ import com.sanson.pix.domain.managerPix.Holder;
 import com.sanson.pix.domain.managerPix.HolderType;
 import com.sanson.pix.domain.managerPix.pixKeys.Email;
 import com.sanson.pix.domain.managerPix.pixKeys.PixKey;
+import com.sanson.pix.util.TestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -57,15 +58,13 @@ class DisableKeyUseCaseTest {
 
     @Test
     public void shouldDisableKey() {
-        var id = UUID.randomUUID();
-        Holder validHolderPF = new Holder("holderTest",null, HolderType.F);
-        Account validAccount = new Account(id,AccountType.CHECKING,
-                1234,123456,validHolderPF, Arrays.asList(new Email(id,"teste@teste.com")));
+        var pixKey = TestUtil.validEmail();
+        var validAccount = TestUtil.validAccount(Arrays.asList(pixKey));
 
-        when(accountPort.loadFromKeyId(eq(id)))
+        when(accountPort.loadFromKeyId(eq(pixKey.getId())))
                 .thenReturn(Optional.of(validAccount));
 
-        disableKeyUseCase.disableKey(id);
+        disableKeyUseCase.disableKey(pixKey.getId());
 
         verify(updateKeyPort).updateKey(accountCaptor.capture());
         assertNotNull(accountCaptor.getValue().getDisabledAt());

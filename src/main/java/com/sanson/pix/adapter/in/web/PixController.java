@@ -58,10 +58,12 @@ public class PixController {
         return new ResponseEntity(new IdResponseDTO(id.toString()), HttpStatus.OK);
     }
 
-    @PutMapping
-    public ResponseEntity<UpdatePixResponseDTO> update(@RequestBody UpdatePixDTO updatePixDTO){
-        var account = changeKeyUseCase.changeKey(ChangeKeyUseAssemble.assemble(updatePixDTO));
-        return ResponseEntity.ok(ChangeKeyUseAssemble.dissemble(account, updatePixDTO.getId()));
+    @PutMapping("{id}")
+    public ResponseEntity<UpdatePixResponseDTO> update(@PathVariable UUID id,
+                                                       @RequestBody UpdatePixDTO updatePixDTO){
+        var account = changeKeyUseCase
+                .changeKey(ChangeKeyUseAssemble.assemble(id, updatePixDTO));
+        return ResponseEntity.ok(ChangeKeyUseAssemble.dissemble(account,id));
     }
 
     @DeleteMapping(value = "{id}")

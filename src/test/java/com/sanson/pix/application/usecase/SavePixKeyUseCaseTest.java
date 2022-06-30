@@ -9,6 +9,7 @@ import com.sanson.pix.domain.managerPix.Holder;
 import com.sanson.pix.domain.managerPix.HolderType;
 import com.sanson.pix.domain.managerPix.pixKeys.PhoneNumber;
 import com.sanson.pix.domain.managerPix.pixKeys.PixType;
+import com.sanson.pix.util.TestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,10 +39,7 @@ class SavePixKeyUseCaseTest {
     @Captor
     private ArgumentCaptor<Account> accountCaptor;
 
-    public Holder validHolderPF = new Holder("holderTest",null, HolderType.F);
-
-    public Account validAccount = new Account(AccountType.CHECKING,
-            1234,123456,validHolderPF, new ArrayList<>());
+    public Account validAccount = TestUtil.validAccount();
 
     @BeforeEach
     public void init(){
@@ -51,8 +49,10 @@ class SavePixKeyUseCaseTest {
     @Test
     public void shouldSaveNewPixKeyWhenAccountNotExistsYet(){
 
+        var holder = validAccount.getHolder();
+
         var savePixKeyCommand = new SavePixKeyCommand(PixType.PHONE_NUMBER, "+5521981798171",
-                AccountType.CHECKING, 1234,12345, validHolderPF);
+                AccountType.CHECKING, 1234,12345, holder);
 
         when(accountPort.findBy(anyInt(), anyInt())).thenReturn(Optional.empty());
 
@@ -73,9 +73,10 @@ class SavePixKeyUseCaseTest {
 
     @Test
     public void shouldSaveNewPixKeyWhenAccountAlreadyExists(){
+        var holder = validAccount.getHolder();
 
         var savePixKeyCommand = new SavePixKeyCommand(PixType.PHONE_NUMBER, "+5521981798171",
-                AccountType.CHECKING, 1234,12345, validHolderPF);
+                AccountType.CHECKING, 1234,12345, holder);
 
         when(accountPort.findBy(anyInt(), anyInt()))
                 .thenReturn(Optional.of(validAccount));

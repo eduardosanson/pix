@@ -10,10 +10,9 @@ import java.util.UUID;
 
 public class ChangeKeyUseAssemble {
 
-    public static ChangeKeyCommand assemble(UpdatePixDTO updatePixDTO){
+    public static ChangeKeyCommand assemble(UUID id, UpdatePixDTO updatePixDTO){
 
-        return new ChangeKeyCommand(
-                updatePixDTO.getId(),
+        return new ChangeKeyCommand(id,
                 Optional.ofNullable(updatePixDTO.getAccountType()),
                 Optional.ofNullable(updatePixDTO.getAgencyNumber()),
                 Optional.ofNullable(updatePixDTO.getAccountNumber()),

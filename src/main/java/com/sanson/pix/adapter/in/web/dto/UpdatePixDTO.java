@@ -7,8 +7,6 @@ import java.util.UUID;
 
 public class UpdatePixDTO {
 
-    private String id;
-
     private AccountType accountType;
 
     private Integer agencyNumber;
@@ -24,9 +22,8 @@ public class UpdatePixDTO {
     public UpdatePixDTO() {
     }
 
-    public UpdatePixDTO(String id, AccountType accountType, Integer agencyNumber,
+    public UpdatePixDTO(AccountType accountType, Integer agencyNumber,
                         Integer accountNumber, String holderName, String holderLastName, HolderType holderType) {
-        this.id = id;
         this.accountType = accountType;
         this.agencyNumber = agencyNumber;
         this.accountNumber = accountNumber;
@@ -41,14 +38,6 @@ public class UpdatePixDTO {
 
     public void setHolderType(HolderType holderType) {
         this.holderType = holderType;
-    }
-
-    public UUID getId() {
-        return UUID.fromString(id);
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public AccountType getAccountType() {
