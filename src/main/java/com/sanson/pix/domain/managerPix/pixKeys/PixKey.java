@@ -83,13 +83,4 @@ public abstract class PixKey {
         return value.equals(pixKey.value);
     }
 
-    @Override
-    public int hashCode() {
-        int result = value.hashCode();
-        result = 31 * result + type.hashCode();
-        result = 31 * result + id.hashCode();
-        result = 31 * result + createdAt.hashCode();
-        result = 31 * result + (disabledAt != null ? disabledAt.hashCode() : 0);
-        return result;
-    }
 }

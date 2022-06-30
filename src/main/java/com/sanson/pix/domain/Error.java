@@ -14,7 +14,4 @@ public class Error {
         throw new BusinessException("is not permitted " + value);
     }
 
-    public static void notFound(String name) throws BusinessException {
-        throw new BusinessException(name + " not found");
-    }
 }
