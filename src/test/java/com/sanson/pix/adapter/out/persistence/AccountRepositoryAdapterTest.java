@@ -80,4 +80,17 @@ class AccountRepositoryAdapterTest {
         assertEquals(validAccount.getPixKeys(), account.getPixKeys());
     }
 
+    @Test
+    public void shouldChangeValuesFindByAgencyAndNumber(){
+        accountRepositoryAdapter.save(validAccount);
+        var newHolder = new Holder(validAccount.getHolder().getId(), "newHolderName",
+                validAccount.getHolder().getLastName(), validAccount.getHolder().getType());
+        var newAccount = new Account(validAccount.getId(),validAccount.getType(), validAccount.getAgency(),
+                validAccount.getNumber(),newHolder, validAccount.getPixKeys());
+        accountRepositoryAdapter.save(newAccount);
+        var account = accountRepositoryAdapter.findBy(validAccount.getAgency(), validAccount.getNumber());
+        assertNotNull(account.get());
+        assertEquals(account.get().getHolder().getName(), "newHolderName");
+    }
+
 }

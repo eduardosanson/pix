@@ -22,8 +22,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -51,7 +53,7 @@ public class PixController {
     @PostMapping
     public ResponseEntity<IdResponseDTO> create(@RequestBody CreatePixDTO createPixDTO){
         var id = savePixKeyUseCase.saveKey(SavePixKeyUseCaseAssemble.assemble(createPixDTO)).getId();
-        return new ResponseEntity(new IdResponseDTO(id.toString()), HttpStatus.CREATED);
+        return new ResponseEntity(new IdResponseDTO(id.toString()), HttpStatus.OK);
     }
 
     @PutMapping
@@ -72,6 +74,14 @@ public class PixController {
         var uuid = UUID.fromString(id);
         var account = findKeyUseCase.findKey(uuid);
         return ResponseEntity.ok(AccountAssemble.dissembleToPixResponse(uuid, account));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<PixResponseDTO>> findMany(
+            @RequestParam Integer agency,
+            @RequestParam Integer accountNumber){
+        var account = findKeyUseCase.findKey(agency, accountNumber);
+        return ResponseEntity.ok(AccountAssemble.dissembleToPixResponse(account));
     }
 
 

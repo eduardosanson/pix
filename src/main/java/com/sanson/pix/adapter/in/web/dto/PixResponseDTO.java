@@ -30,7 +30,7 @@ public class PixResponseDTO {
 
     private LocalDate createdAt;
 
-    private LocalDate disabledAt;
+    private String disabledAt;
 
     public PixResponseDTO(String id, PixType pixType, String pixValue, AccountType accountType, Integer agencyNumber,
                           Integer accountNumber, String holderName, String holderLastName, HolderType holderType,
@@ -45,10 +45,10 @@ public class PixResponseDTO {
         this.holderLastName = holderLastName;
         this.holderType = holderType;
         this.createdAt = createdAt;
-        this.disabledAt = disabledAt;
+        this.disabledAt = disabledAt != null? disabledAt.toString() : "";
     }
 
-    public LocalDate getDisabledAt() {
+    public String getDisabledAt() {
         return disabledAt;
     }
 
@@ -84,6 +84,9 @@ public class PixResponseDTO {
     }
 
     public String getHolderLastName() {
+        if(holderLastName == null){
+            return "";
+        }
         return holderLastName;
     }
 

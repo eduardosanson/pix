@@ -1,7 +1,5 @@
 package com.sanson.pix.adapter.in.web;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sanson.pix.adapter.in.web.assemble.ChangeKeyUseAssemble;
 import com.sanson.pix.adapter.in.web.dto.CreatePixDTO;
 import com.sanson.pix.adapter.in.web.dto.UpdatePixDTO;
 import com.sanson.pix.application.port.in.ChangeKeyCommand;
@@ -26,9 +24,10 @@ import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.anything;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.isNotNull;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -75,7 +74,7 @@ class PixControllerTest {
                         .content(TestUtil.convertToJson(request))
                 )
                 .andDo(print())
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andExpect(content().string(containsString(pixKey.getId().toString())));
     }
 
@@ -182,7 +181,6 @@ class PixControllerTest {
 
         var account = TestUtil.validAccount();
         var pixKey = TestUtil.validEmail();
-        pixKey.disable();
         account.addNewPixKey(pixKey);
 
         when(findKeyUseCase.findKey(any(UUID.class))).thenReturn(account);
@@ -202,7 +200,36 @@ class PixControllerTest {
                 .andExpect(jsonPath("$.holderName", is(account.getHolder().getName())))
                 .andExpect(jsonPath("$.holderLastName", is(account.getHolder().getLastName())))
                 .andExpect(jsonPath("$.holderType", is("F")))
-                .andExpect(jsonPath("$.createdAt", anything()));
+                .andExpect(jsonPath("$.createdAt", anything()))
+                .andExpect(jsonPath("$.disabledAt", is("")));
+    }
+
+    @Test
+    public void shouldReturnOkWhenFindPixKeyByAgencyAndAccountNumber() throws Exception {
+
+        var account = TestUtil.validAccount();
+        var pixKey = TestUtil.validEmail();
+        account.addNewPixKey(pixKey);
+
+        when(findKeyUseCase.findKey(anyInt(), anyInt())).thenReturn(account);
+
+        this.mockMvc.perform(
+                        get(BASE_URL + "?agency=1234&accountNumber=12345")
+                                .contentType(APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].id", hasItem(pixKey.getId().toString())))
+                .andExpect(jsonPath("$[*].pixType", hasItem("EMAIL")))
+                .andExpect(jsonPath("$[*].pixValue", hasItem(pixKey.getValue())))
+                .andExpect(jsonPath("$[*].accountType", hasItem("CHECKING")))
+                .andExpect(jsonPath("$[*].agencyNumber", hasItem(account.getAgency())))
+                .andExpect(jsonPath("$[*].accountNumber", hasItem(account.getNumber())))
+                .andExpect(jsonPath("$[*].holderName", hasItem(account.getHolder().getName())))
+                .andExpect(jsonPath("$[*].holderLastName", hasItem(account.getHolder().getLastName())))
+                .andExpect(jsonPath("$[*].holderType", hasItem("F")))
+                .andExpect(jsonPath("$[*].createdAt", anything()))
+                .andExpect(jsonPath("$[*].disabledAt", hasItem("")));
     }
 
 
