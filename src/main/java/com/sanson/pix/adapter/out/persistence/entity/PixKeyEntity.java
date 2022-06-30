@@ -15,8 +15,6 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "pix_key")
-@SQLDelete(sql = "UPDATE pix_key SET disabled_at = now() WHERE id=?")
-@Where(clause = "disabled_at is null")
 public class PixKeyEntity {
 
     @Id

@@ -13,6 +13,8 @@ import com.sanson.pix.application.port.in.ChangeKeyUseCase;
 import com.sanson.pix.application.port.in.DisableKeyUseCase;
 import com.sanson.pix.application.port.in.FindKeyUseCase;
 import com.sanson.pix.application.port.in.SavePixKeyUseCase;
+import com.sanson.pix.domain.NotFoundException;
+import com.sanson.pix.domain.managerPix.pixKeys.PixType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -82,6 +84,13 @@ public class PixController {
             @RequestParam Integer accountNumber){
         var account = findKeyUseCase.findKey(agency, accountNumber);
         return ResponseEntity.ok(AccountAssemble.dissembleToPixResponse(account));
+    }
+
+    @GetMapping("/type/{type}")
+    public ResponseEntity<List<PixResponseDTO>> findMany(@PathVariable PixType type){
+        var account = findKeyUseCase.findKeyType(type);
+
+        return ResponseEntity.ok(AccountAssemble.dissembleToPixResponse(type, account));
     }
 
 

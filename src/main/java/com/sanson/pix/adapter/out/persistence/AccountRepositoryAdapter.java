@@ -8,12 +8,14 @@ import com.sanson.pix.application.usecase.factory.PixKeyFactory;
 import com.sanson.pix.domain.managerPix.Account;
 import com.sanson.pix.domain.managerPix.Holder;
 import com.sanson.pix.domain.managerPix.pixKeys.PixKey;
+import com.sanson.pix.domain.managerPix.pixKeys.PixType;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class AccountRepositoryAdapter implements AccountPort {
@@ -56,6 +58,13 @@ public class AccountRepositoryAdapter implements AccountPort {
                 new AccountEntity(account.getId(),holder, account.getNumber(),
                         account.getAgency(),account.getType(),pixKeyEntities));
         return accountEntityToDomain(accountEntity);
+    }
+
+    @Override
+    public List<Account> loadFromKeyType(PixType type) {
+        return accountRepository.findByPixKeyEntitiesTypes(type).stream()
+                .map(this::accountEntityToDomain)
+                .collect(Collectors.toList());
     }
 
     private Account accountEntityToDomain(AccountEntity ac) {

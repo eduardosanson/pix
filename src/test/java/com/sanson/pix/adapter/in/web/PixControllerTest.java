@@ -10,8 +10,11 @@ import com.sanson.pix.application.port.in.SavePixKeyCommand;
 import com.sanson.pix.application.port.in.SavePixKeyUseCase;
 import com.sanson.pix.domain.BusinessException;
 import com.sanson.pix.domain.NotFoundException;
+import com.sanson.pix.domain.managerPix.Account;
 import com.sanson.pix.domain.managerPix.AccountType;
+import com.sanson.pix.domain.managerPix.Holder;
 import com.sanson.pix.domain.managerPix.HolderType;
+import com.sanson.pix.domain.managerPix.pixKeys.Email;
 import com.sanson.pix.domain.managerPix.pixKeys.PixType;
 import com.sanson.pix.util.TestUtil;
 import org.junit.jupiter.api.Test;
@@ -20,6 +23,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.anything;
@@ -28,6 +33,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -228,6 +234,49 @@ class PixControllerTest {
                 .andExpect(jsonPath("$[*].holderName", hasItem(account.getHolder().getName())))
                 .andExpect(jsonPath("$[*].holderLastName", hasItem(account.getHolder().getLastName())))
                 .andExpect(jsonPath("$[*].holderType", hasItem("F")))
+                .andExpect(jsonPath("$[*].createdAt", anything()))
+                .andExpect(jsonPath("$[*].disabledAt", hasItem("")));
+    }
+
+    @Test
+    public void shouldReturnOkWhenFindPixKeyByType() throws Exception {
+
+        var account = TestUtil.validAccount();
+        var pixKey = TestUtil.validEmail();
+        account.addNewPixKey(pixKey);
+
+        var validHolderPJ = new Holder("test2","last name", HolderType.J);
+        var pixKey2 = new Email("teste2@teste.com");
+        var account2 = new Account(AccountType.SAVINGS,
+                234,127756,validHolderPJ, Arrays.asList(pixKey2));
+
+        when(findKeyUseCase.findKeyType(eq(pixKey.getType()))).thenReturn(Arrays.asList(account, account2));
+
+        this.mockMvc.perform(
+                        get(BASE_URL + "/type/" + pixKey.getType())
+                                .contentType(APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].id", hasItem(pixKey.getId().toString())))
+                .andExpect(jsonPath("$[*].pixType", hasItem("EMAIL")))
+                .andExpect(jsonPath("$[*].pixValue", hasItem(pixKey.getValue())))
+                .andExpect(jsonPath("$[*].accountType", hasItem("CHECKING")))
+                .andExpect(jsonPath("$[*].agencyNumber", hasItem(account.getAgency())))
+                .andExpect(jsonPath("$[*].accountNumber", hasItem(account.getNumber())))
+                .andExpect(jsonPath("$[*].holderName", hasItem(account.getHolder().getName())))
+                .andExpect(jsonPath("$[*].holderLastName", hasItem(account.getHolder().getLastName())))
+                .andExpect(jsonPath("$[*].holderType", hasItem("F")))
+                .andExpect(jsonPath("$[*].createdAt", anything()))
+                .andExpect(jsonPath("$[*].disabledAt", hasItem("")))
+                .andExpect(jsonPath("$[*].id", hasItem(pixKey2.getId().toString())))
+                .andExpect(jsonPath("$[*].pixValue", hasItem(pixKey2.getValue())))
+                .andExpect(jsonPath("$[*].accountType", hasItem("SAVINGS")))
+                .andExpect(jsonPath("$[*].agencyNumber", hasItem(account2.getAgency())))
+                .andExpect(jsonPath("$[*].accountNumber", hasItem(account2.getNumber())))
+                .andExpect(jsonPath("$[*].holderName", hasItem(account2.getHolder().getName())))
+                .andExpect(jsonPath("$[*].holderLastName", hasItem(account2.getHolder().getLastName())))
+                .andExpect(jsonPath("$[*].holderType", hasItem("J")))
                 .andExpect(jsonPath("$[*].createdAt", anything()))
                 .andExpect(jsonPath("$[*].disabledAt", hasItem("")));
     }

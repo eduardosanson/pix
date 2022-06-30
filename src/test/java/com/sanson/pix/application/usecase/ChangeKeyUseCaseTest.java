@@ -26,7 +26,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ChangeKeyServiceTest {
+class ChangeKeyUseCaseTest {
 
     private ChangeKeyUseCase changeKeyUseCase;
 
